@@ -8,4 +8,12 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <Folder Include="Domain\Entities\" />
+      <Folder Include="Expense-Tracker-CLI\Controllers\" />
+      <Folder Include="Repository\Repositories\" />
+      <Folder Include="Service\Helpers\" />
+      <Folder Include="Service\Services\Interfaces\" />
+    </ItemGroup>
+
 </Project>

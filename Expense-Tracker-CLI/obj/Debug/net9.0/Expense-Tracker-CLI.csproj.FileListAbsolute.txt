@@ -1,0 +1,15 @@
+/Users/sh1riyev/RiderProjects/Expense-Tracker-CLI/Expense-Tracker-CLI/bin/Debug/net9.0/Expense-Tracker-CLI
+/Users/sh1riyev/RiderProjects/Expense-Tracker-CLI/Expense-Tracker-CLI/bin/Debug/net9.0/Expense-Tracker-CLI.deps.json
+/Users/sh1riyev/RiderProjects/Expense-Tracker-CLI/Expense-Tracker-CLI/bin/Debug/net9.0/Expense-Tracker-CLI.runtimeconfig.json
+/Users/sh1riyev/RiderProjects/Expense-Tracker-CLI/Expense-Tracker-CLI/bin/Debug/net9.0/Expense-Tracker-CLI.dll
+/Users/sh1riyev/RiderProjects/Expense-Tracker-CLI/Expense-Tracker-CLI/bin/Debug/net9.0/Expense-Tracker-CLI.pdb
+/Users/sh1riyev/RiderProjects/Expense-Tracker-CLI/Expense-Tracker-CLI/obj/Debug/net9.0/Expense-Tracker-CLI.GeneratedMSBuildEditorConfig.editorconfig
+/Users/sh1riyev/RiderProjects/Expense-Tracker-CLI/Expense-Tracker-CLI/obj/Debug/net9.0/Expense-Tracker-CLI.AssemblyInfoInputs.cache
+/Users/sh1riyev/RiderProjects/Expense-Tracker-CLI/Expense-Tracker-CLI/obj/Debug/net9.0/Expense-Tracker-CLI.AssemblyInfo.cs
+/Users/sh1riyev/RiderProjects/Expense-Tracker-CLI/Expense-Tracker-CLI/obj/Debug/net9.0/Expense-Tracker-CLI.csproj.CoreCompileInputs.cache
+/Users/sh1riyev/RiderProjects/Expense-Tracker-CLI/Expense-Tracker-CLI/obj/Debug/net9.0/Expense-Tracker-CLI.sourcelink.json
+/Users/sh1riyev/RiderProjects/Expense-Tracker-CLI/Expense-Tracker-CLI/obj/Debug/net9.0/Expense-Tracker-CLI.dll
+/Users/sh1riyev/RiderProjects/Expense-Tracker-CLI/Expense-Tracker-CLI/obj/Debug/net9.0/refint/Expense-Tracker-CLI.dll
+/Users/sh1riyev/RiderProjects/Expense-Tracker-CLI/Expense-Tracker-CLI/obj/Debug/net9.0/Expense-Tracker-CLI.pdb
+/Users/sh1riyev/RiderProjects/Expense-Tracker-CLI/Expense-Tracker-CLI/obj/Debug/net9.0/Expense-Tracker-CLI.genruntimeconfig.cache
+/Users/sh1riyev/RiderProjects/Expense-Tracker-CLI/Expense-Tracker-CLI/obj/Debug/net9.0/ref/Expense-Tracker-CLI.dll
