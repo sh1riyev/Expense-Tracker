@@ -9,7 +9,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Domain\Entities\" />
       <Folder Include="Expense-Tracker-CLI\Controllers\" />
       <Folder Include="Repository\Repositories\" />
       <Folder Include="Service\Helpers\" />
