@@ -8,13 +8,18 @@ namespace Expense_Tracker_CLI.Repository.Repositories;
 public class BaseRepository <T> : IBaseRepository<T> where T : BaseEntity
 {
     private readonly DataContext<T> _context;
+    private static int _nextId = 1;
 
     public BaseRepository()
     {
         _context = new DataContext<T>();
     }
-    
-    public void Create(T model) => _context.Data.Add(model);
+
+    public void Create(T model)
+    { 
+        model.Id = _nextId++;
+        _context.Data.Add(model);
+    }
 
     public void Update(T model)
     {

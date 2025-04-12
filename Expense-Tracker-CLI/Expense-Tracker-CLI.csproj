@@ -8,10 +8,4 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
-    <ItemGroup>
-      <Folder Include="Expense-Tracker-CLI\Controllers\" />
-      <Folder Include="Service\Helpers\" />
-      <Folder Include="Service\Services\Interfaces\" />
-    </ItemGroup>
-
 </Project>
