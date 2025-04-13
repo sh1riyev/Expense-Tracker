@@ -7,109 +7,70 @@ using Exception = System.Exception;
 
 namespace Expense_Tracker_CLI.Service.Services;
 
-public class UserService(IUserRepository userRepository) : IUserService
+public class UserService : IUserService
 {
+    private readonly IUserRepository _userRepository;
+
+    public UserService(IUserRepository userRepository)
+    {
+        _userRepository = userRepository;
+    }
     public void Craete(User user)
     {
-        try
-        {
-            if (string.IsNullOrWhiteSpace(user.Email) || string.IsNullOrWhiteSpace(user.FullName))
-            {
-                throw new ArgumentException("Name and Email cannot be empty");
-            }
-
-            var existingUser = userRepository.Find(m => m.Email == user.Email);
-            if (existingUser != null)
-            {
-                throw new ArgumentException("Email already exists.");
-            }
-
-            userRepository.Create(user);
-            ConsoleColor.Green.WriteConsole($"User: {user.Email} has been created.");
-        }
+        ValidateUser(user);
+        CheckDublicateEmail(user.Email);
         
-        catch (ArgumentException ex)
-        {
-            ConsoleColor.Red.WriteConsole($"Validation error: {ex.Message}");
-            throw; 
-        }
-        catch (Exception ex)
-        {
-            ConsoleColor.Red.WriteConsole($"An unexpected error occurred: {ex.Message}");
-            throw; 
-        }
+        _userRepository.Create(user);
     }
     
     public void Update(User user)
     {
-        try
-        {
-            if (string.IsNullOrWhiteSpace(user.Email))
-            {
-                throw new ArgumentException("Email cannot be empty");
-            }
-
-            if (userRepository.Find(m => m.Email == user.Email) != null)
-            {
-                throw new ArgumentException("Email already exists");
-            }
-            userRepository.Update(user);
-            ConsoleColor.Green.WriteConsole($"User: {user.Email} has been updated");
-        }
-        catch (ArgumentException ex)
-        {
-            ConsoleColor.Red.WriteConsole($"Validation error: {ex.Message}");
-            throw; 
-        }
-        catch (Exception e)
-        {
-            ConsoleColor.Red.WriteConsole($"An unexpected error occurred: {e.Message}");
-            throw; 
-        }
+       ValidateUser(user);
+       CheckDublicateEmail(user.Email,user.Id);
+       
+       _userRepository.Update(user);
     }
 
     public void Delete(int? id)
     {
-        try
-        {
-            var user = userRepository.Find(m => m.Id == id);
-            userRepository.Delete(user);
-            ConsoleColor.Green.WriteConsole($"User: {user.Email} has been deleted");
-        }
-        catch (ArgumentNullException ex)
-        {
-            ConsoleColor.Red.WriteConsole("User does not exist");
-            throw;
-        }
-        catch (Exception e)
-        {
-            ConsoleColor.Red.WriteConsole($"An unexpected error occurred: {e.Message}");
-            throw; 
-        }
+       var existingUser = _userRepository.Find(m=>m.Id == id)
+           ?? throw new ArgumentException("User not found");
+       
+       _userRepository.Delete(existingUser);
     }
 
     public User Login(string email, string password)
     {
-        try
-        {
-            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
-            {
-                throw new ArgumentException("Email and Password cannot be empty");
-            }
-            
-            var user = userRepository.Find(m => m.Email == email && m.PasswordHash==password);
+        if(string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+            throw new ArgumentException("Invalid email or password");
+        
+        var user =_userRepository.Find(m=>m.Email==email)
+            ?? throw new ArgumentException("User not found");
+        
+        if(!ValidatePassword(password,user.PasswordHash))
+            throw new ArgumentException("Invalid password");
+        
+        return user;
+    }
 
-            if (user == null)
-            {
-                throw new ArgumentException("Invalid credentials");
-            }
-            
-            return user;
-        }
-        catch (Exception e)
+    private void CheckDublicateEmail(string email,int? currentUserId=null)
         {
-            ConsoleColor.Red.WriteConsole($"An unexpected error occurred: {e.Message}");
-            throw;
+            var existingUser = _userRepository.Find(m=>m.Email==email);
+            if(existingUser!=null && existingUser.Id != currentUserId)
+                throw new ArgumentException($"Email {email} already exists");
         }
+
+    private void ValidateUser(User user)
+    {
+        if(string.IsNullOrWhiteSpace(user.FullName))
+            throw new ArgumentException("Full name cannot be empty");
+        
+        if(string.IsNullOrWhiteSpace(user.Email)||!InputValidation.IsValidEmail(user.Email))
+            throw new ArgumentException("Email is not valid");
+    }
+
+    private bool ValidatePassword(string password, string passwordHash)
+    {
+        return password == passwordHash;
     }
 }
