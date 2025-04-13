@@ -2,57 +2,47 @@ namespace Expense_Tracker_CLI.Service.Helpers;
 
 public static class ExceptionHandler
 {
-    public static void Handle(Action action)
+    public static void Handle(Action action, string? customErrorMessage = null)
     {
         try
         {
             action.Invoke();
         }
-        catch (ArgumentNullException ex)
-        {
-            LogError("Null argument provided", ex);
-        }
-        catch (ArgumentException ex)
-        {
-            LogError("Invalid argument provided", ex);
-        }
-        catch (InvalidOperationException ex)
-        {
-            LogError("Invalid operation provided", ex);
-        }
         catch (Exception ex)
         {
-            LogError("An unexpected error occurred", ex);
+            LogAndDisplayError(ex, customErrorMessage);
+            throw; 
         }
     }
     
-    public static T? Handle<T> (Func<T> function)
+    public static T Handle<T>(Func<T> function, string? customErrorMessage = null, T? fallbackValue = default)
     {
         try
         {
-            return function();
-        }
-        catch (ArgumentNullException ex)
-        {
-            LogError("Null argument provided", ex);
-        }
-        catch (ArgumentException ex)
-        {
-            LogError("Invalid argument provided", ex);
-        }
-        catch (InvalidOperationException ex)
-        {
-            LogError("Invalid operation", ex);
+            return function.Invoke();
         }
         catch (Exception ex)
         {
-            LogError("An unexpected error occurred", ex);
+            LogAndDisplayError(ex, customErrorMessage);
+            return fallbackValue; 
         }
-        return default;
     }
 
-    public static void LogError(string message, Exception ex)
+    private static void LogAndDisplayError(Exception ex, string? customMessage)
     {
-        ConsoleColor.Red.WriteConsole($"{message}\nError Detail: {ex.Message}");
+        string errorMessage = customMessage ?? GetDefaultErrorMessage(ex);
+        ConsoleColor.Red.WriteConsole($"{errorMessage}\nDetails: {ex.Message}");
+        
+    }
+
+    private static string GetDefaultErrorMessage(Exception ex)
+    {
+        return ex switch
+        {
+            ArgumentNullException => "Required data is missing.",
+            ArgumentException => "Invalid input provided.",
+            InvalidOperationException => "Operation cannot be performed.",
+            _ => "An unexpected error occurred."
+        };
     }
 }

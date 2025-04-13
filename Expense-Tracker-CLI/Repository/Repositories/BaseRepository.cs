@@ -2,6 +2,7 @@ using System.Linq.Expressions;
 using Expense_Tracker_CLI.Domain.Common;
 using Expense_Tracker_CLI.Repository.Data;
 using Expense_Tracker_CLI.Repository.Repositories.Interfaces;
+using Expense_Tracker_CLI.Service.Helpers;
 
 namespace Expense_Tracker_CLI.Repository.Repositories;
 
@@ -16,26 +17,53 @@ public class BaseRepository <T> : IBaseRepository<T> where T : BaseEntity
     }
 
     public void Create(T model)
-    { 
-        model.Id = _nextId++;
-        _context.Data.Add(model);
+    {
+        ExceptionHandler.Handle(() =>
+        {
+            model.Id = _nextId++;
+            _context.Data.Add(model);
+        },"Failed to create record. Check input or storage.");
+
     }
 
     public void Update(T model)
     {
-        var existing = _context.Data.Find(m=>m.Id==model.Id);
-        if (existing != null)
+        ExceptionHandler.Handle(() =>
         {
+            var existing = _context.Data.Find(m=>m.Id==model.Id);
+            if (existing == null)
+                throw new InvalidOperationException("Record does not exist.");
             _context.Data.Remove(existing);
             _context.Data.Add(model);
-        }
+            
+        },"Failed to update record. Check input or storage.");
+       
     }
 
-    public void Delete(T model) => _context.Data.Remove(model);
+    public void Delete(T model)
+    {
+        ExceptionHandler.Handle(() =>
+        {
+            if(!_context.Data.Remove(model))
+                throw new InvalidOperationException("Record does not exist.");
+        },"Failed to delete record. Check input or storage.");
+    }
+    public List<T> GetAll() => 
+        ExceptionHandler.Handle(
+            () => _context.Data.ToList(),
+            fallbackValue: new List<T>() // 
+        );
 
-    public List<T> GetAll() => _context.Data.ToList();
+    public T Find(Expression<Func<T, bool>> predicate) => 
+        ExceptionHandler.Handle(
+            () => _context.Data.AsQueryable().FirstOrDefault(predicate),
+            fallbackValue: default // Return null on error
+        );
 
-    public T Find(Expression<Func<T, bool>> predicate) => _context.Data.AsQueryable().FirstOrDefault(predicate);
-
-    public List<T> GetAllWithExpression(Expression<Func<T, bool>> predicate) => _context.Data.AsQueryable().Where(predicate).ToList();
+    public List<T> GetAllWithExpression(Expression<Func<T, bool>> predicate) => 
+        ExceptionHandler.Handle(
+            () => _context.Data.AsQueryable().Where(predicate).ToList(),
+            fallbackValue: new List<T>()
+        );
+    
 }

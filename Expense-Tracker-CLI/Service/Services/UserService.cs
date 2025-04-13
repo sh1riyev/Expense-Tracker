@@ -7,14 +7,8 @@ using Exception = System.Exception;
 
 namespace Expense_Tracker_CLI.Service.Services;
 
-public class UserService : IUserService
+public class UserService(IUserRepository userRepository) : IUserService
 {
-    private readonly IUserRepository _userRepository;
-
-    public UserService()
-    {
-        _userRepository = new UserRepository();
-    }
     public void Craete(User user)
     {
         try
@@ -24,13 +18,14 @@ public class UserService : IUserService
                 throw new ArgumentException("Name and Email cannot be empty");
             }
 
-            if (_userRepository.Find(m => m.Email == user.Email) != null)
+            var existingUser = userRepository.Find(m => m.Email == user.Email);
+            if (existingUser != null)
             {
-                throw new ArgumentException("Email already exists");
+                throw new ArgumentException("Email already exists.");
             }
 
-            _userRepository.Create(user);
-            ConsoleColor.Green.WriteConsole($"User: {user.Email} has been created");
+            userRepository.Create(user);
+            ConsoleColor.Green.WriteConsole($"User: {user.Email} has been created.");
         }
         
         catch (ArgumentException ex)
@@ -54,11 +49,11 @@ public class UserService : IUserService
                 throw new ArgumentException("Email cannot be empty");
             }
 
-            if (_userRepository.Find(m => m.Email == user.Email) != null)
+            if (userRepository.Find(m => m.Email == user.Email) != null)
             {
                 throw new ArgumentException("Email already exists");
             }
-            _userRepository.Update(user);
+            userRepository.Update(user);
             ConsoleColor.Green.WriteConsole($"User: {user.Email} has been updated");
         }
         catch (ArgumentException ex)
@@ -77,8 +72,8 @@ public class UserService : IUserService
     {
         try
         {
-            var user = _userRepository.Find(m => m.Id == id);
-            _userRepository.Delete(user);
+            var user = userRepository.Find(m => m.Id == id);
+            userRepository.Delete(user);
             ConsoleColor.Green.WriteConsole($"User: {user.Email} has been deleted");
         }
         catch (ArgumentNullException ex)
@@ -102,7 +97,7 @@ public class UserService : IUserService
                 throw new ArgumentException("Email and Password cannot be empty");
             }
             
-            var user = _userRepository.Find(m => m.Email == email && m.PasswordHash==password);
+            var user = userRepository.Find(m => m.Email == email && m.PasswordHash==password);
 
             if (user == null)
             {
