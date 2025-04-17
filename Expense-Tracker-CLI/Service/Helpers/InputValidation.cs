@@ -1,3 +1,5 @@
+using System.Net.Mail;
+
 namespace Expense_Tracker_CLI.Service.Helpers;
 
 public static class InputValidation
@@ -23,8 +25,8 @@ public static class InputValidation
 
         try
         {
-            var mailAddress = new System.Net.Mail.MailAddress(email);
-            return mailAddress.Address == email;
+            MailAddress m = new MailAddress(email);
+            return m.Address == email;
         }
         catch
         {
@@ -54,4 +56,29 @@ public static class InputValidation
                 ConsoleColor.Red.WriteConsole("Passwords do not match.");
             }
         }
+
+    public static bool GetConfirmation(string prompt, bool isValid = false)
+    {
+        while (true)
+        {
+            ConsoleColor.Yellow.WriteConsole(prompt);
+            string input = Console.ReadLine()?.Trim().ToLower();
+            
+            if(string.IsNullOrEmpty(input))
+                return isValid;
+            
+            switch (input)
+            {
+                case "y":
+                case "yes":
+                    return true;
+                case "n":
+                case "no":
+                    return false;
+                default:
+                    ConsoleColor.Red.WriteConsole("Invalid input. Please enter 'y' or 'n'.");
+                    break;
+            }
+        }
     }
+}

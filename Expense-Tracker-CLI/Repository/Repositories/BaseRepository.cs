@@ -34,6 +34,7 @@ public class BaseRepository <T> : IBaseRepository<T> where T : BaseEntity
             if (existing == null)
                 throw new InvalidOperationException("Record does not exist.");
             _context.Data.Remove(existing);
+            model.UpdatedAt = DateTime.UtcNow;
             _context.Data.Add(model);
             
         },"Failed to update record. Check input or storage.");
@@ -44,20 +45,21 @@ public class BaseRepository <T> : IBaseRepository<T> where T : BaseEntity
     {
         ExceptionHandler.Handle(() =>
         {
-            if(!_context.Data.Remove(model))
+            bool isRemoved = _context.Data.Remove(model);
+            if(!isRemoved)
                 throw new InvalidOperationException("Record does not exist.");
         },"Failed to delete record. Check input or storage.");
     }
     public List<T> GetAll() => 
         ExceptionHandler.Handle(
             () => _context.Data.ToList(),
-            fallbackValue: new List<T>() // 
+            fallbackValue: new List<T>() 
         );
 
     public T Find(Expression<Func<T, bool>> predicate) => 
         ExceptionHandler.Handle(
             () => _context.Data.AsQueryable().FirstOrDefault(predicate),
-            fallbackValue: default // Return null on error
+            fallbackValue: default
         );
 
     public List<T> GetAllWithExpression(Expression<Func<T, bool>> predicate) => 
